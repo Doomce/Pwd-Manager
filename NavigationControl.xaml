@@ -6,6 +6,7 @@
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      xmlns:local="using:PasswordManagerWINUI"
+     xmlns:appearance="using:PasswordManagerWINUI.Appearance"
      xmlns:winui="using:Microsoft.UI.Xaml.Controls"
      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -34,11 +35,29 @@
                 <InfoBar x:Name="InfoBarNav"
                          Background="Yellow"
                          Foreground="Black"
-                         IsOpen="False"
+                         IsOpen="True"
                          Message="InfoBarNav message"/>
             </NavigationView.FooterMenuItems>
 
-            <Frame x:Name="ContentFrame"/>
+            <winui:Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <InfoBar x:Name="MessageBar"
+                        Grid.Row="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        IsOpen="{x:Bind appearance:GlobalInfoBar.MessageBar.IsOpen, Mode=OneWay}"
+                        Title="{x:Bind appearance:GlobalInfoBar.MessageBar.Title, Mode=OneWay}"
+                        Message="{x:Bind appearance:GlobalInfoBar.MessageBar.Message, Mode=OneWay}"
+                        Severity="{x:Bind appearance:GlobalInfoBar.MessageBar.Severity, Mode=OneWay}"/>
+
+
+                <Frame Grid.Row="1" x:Name="ContentFrame"/>
+            </winui:Grid>
+           
         </NavigationView>
     </Grid>
 </UserControl>

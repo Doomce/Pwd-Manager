@@ -3,37 +3,19 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using PasswordManagerWINUI.BackEndLogic;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
-using Windows.UI.Core;
-using Microsoft.UI;
 using Windows.ApplicationModel.DataTransfer;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace PasswordManagerWINUI
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class SecondPage : Page
     {
         private PasswordListItemModel Model;
-        private AppBarToggleButton VisiblePassword;
+        private (CommandBar, AppBarToggleButton) ActiveBar;
 
         public SecondPage()
         {
@@ -44,92 +26,98 @@ namespace PasswordManagerWINUI
 
         private void Refresh_Btn_OnClick(object sender, RoutedEventArgs e)
         {
-
-            Model.Passwords.Add(new PasswordItem { Title = "GOOGLE.COM", Password = "password12333" });
+            Model.Passwords.Add(new PasswordItem { Title = "GOOGLE.COM", Password = "password12333", UserName = "TEST"});
             var obj = ListViewPasswords.ItemTemplate;
             ListViewPasswords.ItemsSource = Model.Passwords;
-
-        }
-
-
-        private void Element_Got_Focus_On_Keyboard(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
-        {
-            Debug.WriteLine("GotFocus");
-            
-            VisualStateManager.GoToState(sender as Control, "HoverButtonsShown", true);
-            
+            GC.Collect();
         }
 
         private void Pointer_Entered_OnElem(object sender, PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse || e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Pen)
             {
-                var item = sender as Control;
-                VisualStateManager.GoToState(item, "PointerOver", true);
+                var item = sender as ListViewItem;
+                HideOrShowControls(item.Content as CommandBar, true);
             }
         }
 
         private void Pointer_Exited_OnElem(object sender, PointerRoutedEventArgs e)
         {
-            var item = sender as Control;
-            var dataItem = item.DataContext as PasswordItem;
-            if (dataItem != null && dataItem.IsPassHidden.Contains("Visible")) return;
-            VisualStateManager.GoToState(item, "Normal", true);
-
+            var item = sender as ListViewItem;
+            var cmdBar = item.Content as CommandBar;
+            if (cmdBar.IsOpen) return;
+            if (cmdBar.PrimaryCommands[0] is AppBarToggleButton btn && btn.IsChecked == true)
+            {
+                if (ActiveBar.Item2 != null && btn == ActiveBar.Item2 && ActiveBar.Item2.DataContext is PasswordItem context && context.IsNotPassHidden) ActiveBar.Item1 = cmdBar;
+                return;
+            }
+            HideOrShowControls(cmdBar, false);
         }
 
-        private void PassBtn_OnClick(object sender, RoutedEventArgs e)
+        private async void PassBtn_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (AppBarToggleButton)sender;
             var dataItem = button.DataContext as PasswordItem;
 
-            foreach (var passwordItem in Model.Passwords.Where(item => item.IsPassHidden == "Visible" && item!=dataItem))
+            if (ActiveBar.Item1 != null) CheckIfVisibleExists(ref button);
+
+            if (dataItem.GetState() == PasswordItemState.Hidden)
             {
-                passwordItem.ChangePassHiddenState();
-                passwordItem.OnPropertyChanged(nameof(passwordItem.IsPassHidden));
-                passwordItem.OnPropertyChanged(nameof(passwordItem.IsPassButtonActive));
+                if (!await Security.CheckSecurity())
+                {
+                    button.IsChecked = false;
+                    return;
+                }
             }
 
-            dataItem.ChangePassHiddenState();
-            dataItem.OnPropertyChanged(nameof(dataItem.IsPassHidden));
-            dataItem.OnPropertyChanged(nameof(dataItem.IsPassButtonActive));
-
-            ChangeShowPassBtnText(button, dataItem.IsPassButtonActive);
-            if (VisiblePassword != null && VisiblePassword != button) ChangeShowPassBtnText(VisiblePassword, !dataItem.IsPassButtonActive);
-            if (dataItem.IsPassButtonActive) VisiblePassword = button;
+            ChangeVisibility(dataItem);
+            ChangeShowPassBtnText(button, dataItem.IsNotPassHidden);
+            ActiveBar.Item2 = button;
+            GC.Collect();
         }
 
+        private void CheckIfVisibleExists(ref AppBarToggleButton senderBtn)
+        {
+            var cmdBtn = ActiveBar.Item1.PrimaryCommands[0] as AppBarToggleButton;
+            if (cmdBtn == senderBtn) return;
+            var activeContext = ActiveBar.Item1.DataContext as PasswordItem;
+            if (!activeContext.IsNotPassHidden) return;
+            
+            ChangeVisibility(activeContext);
+            HideOrShowControls(ActiveBar.Item1, false);
+            ChangeShowPassBtnText(cmdBtn, activeContext.IsNotPassHidden);
+            ActiveBar = (null, null);
+        }
+
+        private void HideOrShowControls(CommandBar cmdBar, bool show)
+        {
+            foreach (Control cmd in cmdBar.PrimaryCommands) cmd.Opacity = show ? 1 : 0;
+        }
+
+        private void ChangeVisibility(PasswordItem dataContext)
+        {
+            if (dataContext.GetState() == PasswordItemState.Hidden) dataContext.ChangeState(PasswordItemState.Visible);
+            else dataContext.ChangeState(PasswordItemState.Hidden);
+            dataContext.OnPropertyChanged(nameof(dataContext.IsNotPassHidden));
+            dataContext.OnPropertyChanged(nameof(dataContext.PassHiddenString));
+        }
 
         private void ChangeShowPassBtnText(AppBarToggleButton button, bool isBtnActive)
         {
             if (button is null) return;
-            if (isBtnActive)
+            button.Label = isBtnActive ? "Slëpti slaptaþodá" : "Perþiûrëti slaptaþodá";
+            button.Icon = new FontIcon()
             {
-                button.Label = "Slëpti slaptaþodá";
-                button.Icon = new FontIcon()
-                {
-                    FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                    Glyph = "\uED1A"
-                };
-                button.IsChecked = true;
-            }
-            else
-            {
-                button.Label = "Perþiûrëti slaptaþodá";
-                button.Icon = new FontIcon()
-                {
-                    FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                    Glyph = "\uF78D"
-                };
-                button.IsChecked = false;
-            }
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                Glyph = isBtnActive ? "\uED1A" : "\uF78D"
+            };
+            button.IsChecked = isBtnActive;
         }
 
         private void CopyBtn_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (AppBarButton)sender;
             if (button.DataContext is not PasswordItem dataItem) return;
-
             var package = new DataPackage();
             package.SetText(dataItem.Password);
             Clipboard.SetContent(package);

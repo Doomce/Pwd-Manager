@@ -11,33 +11,53 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     
-    <Grid>
+    <Grid MaxWidth="1500">
 
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="50" Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Atnaujinimo mygtukas -->
-        <Button 
-            x:Name="Refresh_Btn"
-            Click="Refresh_Btn_OnClick"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Grid.Row="1"
-            Margin="20">
+        <Grid Grid.Row="1" Margin="30,0,0,40" MinWidth="420">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
 
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <SymbolIcon Grid.Column="0" Symbol="Sync" Margin="0, 0, 20, 0"/>
-                <TextBlock Grid.Column="1" Text="Atnaujinti slaptažodžius"></TextBlock>
-            </Grid>
+            <FontIcon Grid.Column="0" x:Name="HeaderIcon" Glyph="&#xE895;" FontSize="70" Margin="0,0,30,0"  HorizontalAlignment="Left"></FontIcon>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Left">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" x:Name="HeaderTitle" Text="Duomenys atnaujinti"></TextBlock>
+                <TextBlock Foreground="LightGray" Style="{StaticResource BodyTextBlockStyle}" x:Name="HeaderText" Text="Jūsų slaptažodžiai paskutinį kartą sinchronizuoti XX:XX."></TextBlock>
+            </StackPanel>
+            
+            
+            <Button 
+                x:Name="Refresh_Btn"
+                Grid.Column="2"
+                Click="Refresh_Btn_OnClick"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Margin="20">
 
-        </Button>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <SymbolIcon Grid.Column="0" Symbol="Add" Margin="0, 0, 20, 0"/>
+                    <TextBlock Grid.Column="1" Text="Įtraukti slaptažodį"></TextBlock>
+                    <!--
+                    <SymbolIcon Grid.Column="0" Symbol="Sync" Margin="0, 0, 20, 0"/>
+                    <TextBlock Grid.Column="1" Text="Atnaujinti slaptažodžius"></TextBlock>
+                    -->
+                </Grid>
+            </Button>
+
+
+        </Grid>        
 
         <!-- Sąrašas -->
         <ListView x:Name="ListViewPasswords"
@@ -45,77 +65,75 @@
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   Margin="20,0,20,20"
-                  SelectionChanged="Element_Got_Focus_On_Keyboard"
-                  Grid.Row="2">
+                  Grid.Row="2"
+                  IsItemClickEnabled="True"
+                  MinWidth="420">
 
             <!-- Sąrašo elementai -->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UserControl IsTabStop="False" PointerEntered="Pointer_Entered_OnElem" PointerExited="Pointer_Exited_OnElem">
-                        <CommandBar x:Name="CmdBar" Grid.Column="2" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" VerticalContentAlignment="Center" >
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="PointerStates">
-                                    <VisualState x:Name="Normal"/>
-                                    <VisualState x:Name="PointerOver">
-                                        <VisualState.Setters>
-                                            <Setter Target="PassBtn.Visibility" Value="Visible"/>
-                                            <Setter Target="EditBtn.Visibility" Value="Visible"/>
-                                            <Setter Target="RemBtn.Visibility" Value="Visible"/>
-                                            <Setter Target="CopyBtn.Visibility" Value="Visible"/>
-                                            <Setter Target="Separator3.Visibility" Value="Visible"/>
-                                            <Setter Target="Separator1.Visibility" Value="Visible"/>
-                                            <Setter Target="Separator2.Visibility" Value="Visible"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="ToggleStates">
-                                    <VisualState x:Name="Off"/>
-                                    <VisualState x:Name="On">
-                                        <VisualState.Setters>
-                                            <Setter Target="passBox.PasswordRevealMode" Value="Visible"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-
-                            <AppBarButton x:Name="CopyBtn" Icon="Copy" Label="Kopijuoti" Visibility="Collapsed" Click="CopyBtn_OnClick"/>
-                            <AppBarSeparator x:Name="Separator3" Visibility="Collapsed"/>
-                            <AppBarButton x:Name="EditBtn" Icon="Edit" Label="Redaguoti" Visibility="Collapsed"/>
-                            <AppBarSeparator x:Name="Separator1" Visibility="Collapsed"/>
-                            <AppBarButton x:Name="RemBtn" Icon="Delete" Label="Pa&#353;alinti" Visibility="Collapsed" />
-                            <AppBarSeparator x:Name="Separator2" Visibility="Collapsed"/>
-                            <AppBarToggleButton x:Name="PassBtn" Label="Per&#382;i&#363;r&#279;ti slapta&#382;od&#303;"  Visibility="Collapsed" Click="PassBtn_OnClick" IsChecked="{Binding IsPassButtonActive, Mode=OneWay}">
-                                <AppBarToggleButton.Icon>
-                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF78D;"/>
-                                </AppBarToggleButton.Icon>
-                            </AppBarToggleButton>
+                    
+                    <ListViewItem PointerEntered="Pointer_Entered_OnElem" PointerExited="Pointer_Exited_OnElem">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="ToggleStates">
+                                <VisualState x:Name="Off"/>
+                                <VisualState x:Name="On">
+                                    <VisualState.Setters>
+                                        <Setter Target="passBox.PasswordRevealMode" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
 
 
-
+                        <CommandBar ClosedDisplayMode="Compact" x:Name="commandBar" Visibility="Visible" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" VerticalContentAlignment="Center" >
                             <CommandBar.Content>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="250"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="0" VerticalAlignment="Center"
-                                                   Text="{Binding Title}"
-                                                   FontWeight="Bold"/>
+                                    <TextBlock HorizontalAlignment="Stretch" Grid.Column="0" 
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Title}"
+                                            FontWeight="Bold"/>
 
-                                    <PasswordBox 
-                                        x:Name="passBox"
-                                        Grid.Column="1" Width="200" Margin="20,0,8,0"
-                                        PasswordRevealMode="{Binding IsPassHidden, Mode=OneWay}" IsEnabled="false"
-                                        Password="{Binding Password}"/>
+                                    <TextBlock HorizontalAlignment="Stretch" Grid.Column="1" 
+                                            Margin="20,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding UserName}"/>
 
-
+                                    <PasswordBox  HorizontalAlignment="Stretch"
+                                            x:Name="passBox"
+                                            Grid.Column="2"
+                                            Width="200" 
+                                            Margin="20,0,0,0"
+                                            PasswordRevealMode="{Binding PassHiddenString, Mode=OneWay}" 
+                                            IsEnabled="False"
+                                            Password="{Binding Password}"
+                                            VerticalAlignment="Center"
+                                            ToolTipService.ToolTip="Peržiūrėti slaptažodį."/>
                                 </Grid>
-
                             </CommandBar.Content>
+                            <CommandBar.PrimaryCommands>
+                                <AppBarToggleButton Opacity="0" Label="Per&#382;i&#363;r&#279;ti slapta&#382;od&#303;" Click="PassBtn_OnClick" IsChecked="{Binding IsNotPassHidden, Mode=OneWay}">
+                                    <AppBarToggleButton.Icon>
+                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF78D;"/>
+                                    </AppBarToggleButton.Icon>
+                                </AppBarToggleButton>
+                                <AppBarSeparator Opacity="0"/>
+                                <AppBarButton Opacity="0" Icon="Edit" Label="Redaguoti"/>
+                                <AppBarSeparator Opacity="0"/>
+                                <AppBarButton Opacity="0" Icon="Delete" Label="Pa&#353;alinti"/>
+                                <AppBarSeparator Opacity="0"/>
+                                <AppBarButton Opacity="0" Icon="Copy" Label="Kopijuoti" Click="CopyBtn_OnClick"/>
+                            </CommandBar.PrimaryCommands>
+
                         </CommandBar>
-                    </UserControl>
+                    </ListViewItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -123,12 +141,7 @@
 
 
 
-        <InfoBar x:Name="InfoBarApp"
-                 Grid.Row="0"
-                 HorizontalAlignment="Stretch"
-                 VerticalAlignment="Top"
-                 IsOpen="True"
-                 Message="InfoBarApp message"/>
+        
 
     </Grid>
 </Page>

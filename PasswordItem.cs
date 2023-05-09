@@ -3,34 +3,52 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PasswordManagerWINUI
 {
+    internal enum PasswordItemState
+    {
+        Visible,
+        Hidden,
+        IsInVerificationProcess    
+    }
+
     internal class PasswordItem : INotifyPropertyChanged
     {
+        public PasswordItem() { ChangeState(PasswordItemState.Hidden); }
+
         public string Title { get; set; }
         public string Password { get; set; }
-        public string IsPassHidden { get; set; } = "Hidden";
-        public bool IsPassButtonActive { get; set; } = false;
+        public string UserName { get; set; }
+        public string PassHiddenString { get; set; }
+        public bool IsNotPassHidden { get; set; }
 
-
-        public void ChangePassHiddenState()
+        public PasswordItemState GetState()
         {
-            if (IsPassHidden == "Hidden")
-            {
-                IsPassHidden = "Visible";
-                IsPassButtonActive = true;
-            }
-            else
-            {
-                IsPassHidden = "Hidden";
-                IsPassButtonActive = false;
-            }
-            OnPropertyChanged();
+            return IsNotPassHidden ? PasswordItemState.Visible : PasswordItemState.Hidden;
         }
 
+        public void ChangeState([Optional] PasswordItemState state)
+        {   
+            switch (state)
+            {
+                case PasswordItemState.Hidden:
+                    {
+                        PassHiddenString = "Hidden";
+                        IsNotPassHidden = false;
+                        break;
+                    }
+                case PasswordItemState.Visible:
+                    {
+                        PassHiddenString = "Visible";
+                        IsNotPassHidden = true;
+                        break;
+                    }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

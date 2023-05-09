@@ -8,14 +8,19 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using PasswordManagerWINUI.Appearance;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xml.Linq;
+using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using static System.Net.WebRequestMethods;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -27,6 +32,15 @@ namespace PasswordManagerWINUI
     {
         private FrameNavigationOptions navOptions = new FrameNavigationOptions();
 
+        public static void ShowMessage(string title, string message, InfoBarSeverity severity)
+        {
+            GlobalInfoBar.MessageBar.IsOpen = false;
+            GlobalInfoBar.MessageBar.Title = title;
+            GlobalInfoBar.MessageBar.Message = message;
+            GlobalInfoBar.MessageBar.Severity = severity;
+            GlobalInfoBar.MessageBar.IsOpen = true;
+        }
+
         public NavigationControl()
         {
             InitializeComponent();
@@ -34,7 +48,6 @@ namespace PasswordManagerWINUI
 
         private void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-
             navOptions.TransitionInfoOverride = args.RecommendedNavigationTransitionInfo;
             if (sender.PaneDisplayMode == NavigationViewPaneDisplayMode.LeftCompact)
             {
@@ -45,7 +58,7 @@ namespace PasswordManagerWINUI
             {
                 pageType = typeof(SecondPage);
             }
-            else if (args.InvokedItem == "Slapta?od?iai")
+            else if (args.InvokedItem == "Slaptaþodþiai")
             {
                 //pageType = typeof(SamplePage2);
             }
