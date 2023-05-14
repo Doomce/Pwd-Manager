@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PasswordManagerWINUI.BackEndLogic;
 using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace PasswordManagerWINUI
@@ -105,7 +106,7 @@ namespace PasswordManagerWINUI
         private void ChangeShowPassBtnText(AppBarToggleButton button, bool isBtnActive)
         {
             if (button is null) return;
-            button.Label = isBtnActive ? "Sl�pti slapta�od�" : "Per�i�r�ti slapta�od�";
+            button.Label = isBtnActive ? "Slėpti slaptažodį" : "Peržiūrėti slaptažodį";
             button.Icon = new FontIcon()
             {
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
@@ -114,13 +115,20 @@ namespace PasswordManagerWINUI
             button.IsChecked = isBtnActive;
         }
 
-        private void CopyBtn_OnClick(object sender, RoutedEventArgs e)
+        private async void CopyBtn_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (AppBarButton)sender;
             if (button.DataContext is not PasswordItem dataItem) return;
+            
+            if (!await Security.CheckSecurity()) return;
+            
             var package = new DataPackage();
             package.SetText(dataItem.Password);
             Clipboard.SetContent(package);
+            NavigationControl.ShowMessage(
+                "Sėkminga!", 
+                "Slaptažodis nukopijuotas į iškarpinę. Šį slaptažodį įklijuokite tik slaptažodžio langelyje.",
+                InfoBarSeverity.Success);
         }
     }
 }

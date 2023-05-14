@@ -1,54 +1,81 @@
-﻿<!-- Copyright (c) Microsoft Corporation and Contributors. -->
-<!-- Licensed under the MIT License. -->
+﻿<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
+<!--  Licensed under the MIT License.  -->
 
 <Page
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    d:DataContext="{d:DesignInstance Type=passwordmanagerwinui:PasswordListItemModel}"
+    mc:Ignorable="d"
     x:Class="PasswordManagerWINUI.SecondPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:passwordmanagerwinui="using:PasswordManagerWINUI" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d:DataContext="{d:DesignInstance Type=passwordmanagerwinui:PasswordListItemModel}"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    
+    xmlns:passwordmanagerwinui="using:PasswordManagerWINUI"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <Grid MaxWidth="1500">
 
         <Grid.RowDefinitions>
-            <RowDefinition MinHeight="50" Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto" MinHeight="50" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Atnaujinimo mygtukas -->
-        <Grid Grid.Row="1" Margin="30,0,0,40" MinWidth="420">
+        <!--  Atnaujinimo mygtukas  -->
+        <Grid
+            Grid.Row="1"
+            Margin="30,0,0,40"
+            MinWidth="420">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <FontIcon Grid.Column="0" x:Name="HeaderIcon" Glyph="&#xE895;" FontSize="70" Margin="0,0,30,0"  HorizontalAlignment="Left"></FontIcon>
-            <StackPanel Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Left">
-                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" x:Name="HeaderTitle" Text="Duomenys atnaujinti"></TextBlock>
-                <TextBlock Foreground="LightGray" Style="{StaticResource BodyTextBlockStyle}" x:Name="HeaderText" Text="Jūsų slaptažodžiai paskutinį kartą sinchronizuoti XX:XX."></TextBlock>
+            <FontIcon
+                FontSize="70"
+                Glyph="&#xE895;"
+                Grid.Column="0"
+                HorizontalAlignment="Left"
+                Margin="0,0,30,0"
+                x:Name="HeaderIcon" />
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center">
+                <TextBlock
+                    Style="{StaticResource SubtitleTextBlockStyle}"
+                    Text="Duomenys atnaujinti"
+                    x:Name="HeaderTitle" />
+                <TextBlock
+                    Foreground="LightGray"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="Jūsų slaptažodžiai paskutinį kartą atnaujinti XX:XX."
+                    x:Name="HeaderText" />
             </StackPanel>
-            
-            
-            <Button 
-                x:Name="Refresh_Btn"
-                Grid.Column="2"
-                Click="Refresh_Btn_OnClick"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Right"
-                Margin="20">
 
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto">
+
+            <Button
+                Click="Refresh_Btn_OnClick"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                Margin="20"
+                VerticalAlignment="Top"
+                x:Name="Refresh_Btn">
+
+                <Grid
+                    Height="Auto"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Width="Auto">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <SymbolIcon Grid.Column="0" Symbol="Add" Margin="0, 0, 20, 0"/>
-                    <TextBlock Grid.Column="1" Text="Įtraukti slaptažodį"></TextBlock>
+                    <SymbolIcon
+                        Grid.Column="0"
+                        Margin="0,0,20,0"
+                        Symbol="Add" />
+                    <TextBlock Grid.Column="1" Text="Įtraukti slaptažodį" />
                     <!--
                     <SymbolIcon Grid.Column="0" Symbol="Sync" Margin="0, 0, 20, 0"/>
                     <TextBlock Grid.Column="1" Text="Atnaujinti slaptažodžius"></TextBlock>
@@ -57,82 +84,107 @@
             </Button>
 
 
-        </Grid>        
+        </Grid>
 
-        <!-- Sąrašas -->
-        <ListView x:Name="ListViewPasswords"
-                  ItemsSource="{Binding Passwords}"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  Margin="20,0,20,20"
-                  Grid.Row="2"
-                  IsItemClickEnabled="True"
-                  MinWidth="420">
+        <!--  Sąrašas  -->
+        <ListView
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            IsItemClickEnabled="True"
+            ItemsSource="{Binding Passwords}"
+            Margin="20,0,20,20"
+            MinWidth="420"
+            VerticalAlignment="Stretch"
+            x:Name="ListViewPasswords">
 
-            <!-- Sąrašo elementai -->
+            <!--  Sąrašo elementai  -->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    
+
                     <ListViewItem PointerEntered="Pointer_Entered_OnElem" PointerExited="Pointer_Exited_OnElem">
+                        <CommandBar
+                            Background="Transparent"
+                            ClosedDisplayMode="Compact"
+                            DefaultLabelPosition="Right"
+                            IsOpen="False"
+                            VerticalContentAlignment="Center"
+                            Visibility="Visible"
+                            x:Name="commandBar">
+                            <CommandBar.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="250" />
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        FontWeight="Bold"
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Stretch"
+                                        Text="{Binding Title}"
+                                        VerticalAlignment="Center" />
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="20,0,0,0"
+                                        Text="{Binding UserName}"
+                                        VerticalAlignment="Center" />
+
+                                    <PasswordBox
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="False"
+                                        Margin="20,0,0,0"
+                                        Password="{Binding Password}"
+                                        PasswordRevealMode="{Binding PassHiddenString, Mode=OneWay}"
+                                        ToolTipService.ToolTip="Peržiūrėti slaptažodį."
+                                        VerticalAlignment="Center"
+                                        Width="200"
+                                        x:Name="passBox" />
+                                </Grid>
+                            </CommandBar.Content>
+                            <CommandBar.PrimaryCommands>
+                                <AppBarToggleButton
+                                    Click="PassBtn_OnClick"
+                                    IsChecked="{Binding IsNotPassHidden, Mode=OneWay}"
+                                    Label="Per&#382;i&#363;r&#279;ti slapta&#382;od&#303;"
+                                    Opacity="0">
+                                    <AppBarToggleButton.Icon>
+                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF78D;" />
+                                    </AppBarToggleButton.Icon>
+                                </AppBarToggleButton>
+                                <AppBarSeparator Opacity="0" />
+                                <AppBarButton
+                                    Icon="Edit"
+                                    Label="Redaguoti"
+                                    Opacity="0" />
+                                <AppBarSeparator Opacity="0" />
+                                <AppBarButton
+                                    Icon="Delete"
+                                    Label="Pa&#353;alinti"
+                                    Opacity="0" />
+                                <AppBarSeparator Opacity="0" />
+                                <AppBarButton
+                                    Click="CopyBtn_OnClick"
+                                    Icon="Copy"
+                                    Label="Kopijuoti"
+                                    Opacity="0" />
+                            </CommandBar.PrimaryCommands>
+
+                        </CommandBar>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="ToggleStates">
-                                <VisualState x:Name="Off"/>
+                                <VisualState x:Name="Off" />
                                 <VisualState x:Name="On">
                                     <VisualState.Setters>
-                                        <Setter Target="passBox.PasswordRevealMode" Value="Visible"/>
+                                        <Setter Target="passBox.PasswordRevealMode" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
-
-                        <CommandBar ClosedDisplayMode="Compact" x:Name="commandBar" Visibility="Visible" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" VerticalContentAlignment="Center" >
-                            <CommandBar.Content>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="250"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock HorizontalAlignment="Stretch" Grid.Column="0" 
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Title}"
-                                            FontWeight="Bold"/>
-
-                                    <TextBlock HorizontalAlignment="Stretch" Grid.Column="1" 
-                                            Margin="20,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding UserName}"/>
-
-                                    <PasswordBox  HorizontalAlignment="Stretch"
-                                            x:Name="passBox"
-                                            Grid.Column="2"
-                                            Width="200" 
-                                            Margin="20,0,0,0"
-                                            PasswordRevealMode="{Binding PassHiddenString, Mode=OneWay}" 
-                                            IsEnabled="False"
-                                            Password="{Binding Password}"
-                                            VerticalAlignment="Center"
-                                            ToolTipService.ToolTip="Peržiūrėti slaptažodį."/>
-                                </Grid>
-                            </CommandBar.Content>
-                            <CommandBar.PrimaryCommands>
-                                <AppBarToggleButton Opacity="0" Label="Per&#382;i&#363;r&#279;ti slapta&#382;od&#303;" Click="PassBtn_OnClick" IsChecked="{Binding IsNotPassHidden, Mode=OneWay}">
-                                    <AppBarToggleButton.Icon>
-                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF78D;"/>
-                                    </AppBarToggleButton.Icon>
-                                </AppBarToggleButton>
-                                <AppBarSeparator Opacity="0"/>
-                                <AppBarButton Opacity="0" Icon="Edit" Label="Redaguoti"/>
-                                <AppBarSeparator Opacity="0"/>
-                                <AppBarButton Opacity="0" Icon="Delete" Label="Pa&#353;alinti"/>
-                                <AppBarSeparator Opacity="0"/>
-                                <AppBarButton Opacity="0" Icon="Copy" Label="Kopijuoti" Click="CopyBtn_OnClick"/>
-                            </CommandBar.PrimaryCommands>
-
-                        </CommandBar>
                     </ListViewItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -141,7 +193,7 @@
 
 
 
-        
+
 
     </Grid>
 </Page>
