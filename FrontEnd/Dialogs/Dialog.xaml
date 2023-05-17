@@ -1,0 +1,57 @@
+<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+<!-- Licensed under the MIT License. -->
+
+<Page
+    x:Class="PasswordManagerWINUI.FrontEnd.PasswordDialogs.Dialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PasswordManagerWINUI.FrontEnd.PasswordDialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent">
+            <!-- Content body -->
+
+            <TextBlock x:Name="Tooltip1" Style="{StaticResource BodyStrongTextBlockStyle}" Visibility="Collapsed" />
+            <TextBox
+                Margin="0,5,0,20"
+                VerticalAlignment="Center"
+                Width="300"
+                x:Name="FirstTextBox"
+                Visibility="Collapsed"/>
+
+            <TextBlock x:Name="Tooltip2" Style="{StaticResource BodyStrongTextBlockStyle}" Visibility="Collapsed" />
+            <TextBox
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Width="300"
+                x:Name="SecondTextBox"
+                Visibility="Collapsed"/>
+
+            <TextBlock x:Name="TooltipPass1" Style="{StaticResource BodyStrongTextBlockStyle}" Visibility="Collapsed" />
+            <PasswordBox
+                Margin="0,5,0,0"
+                Password=""
+                PasswordRevealMode="Peek"
+                VerticalAlignment="Center"
+                Width="300"
+                x:Name="PassBox1"
+                Visibility="Collapsed"/>
+
+            <TextBlock x:Name="TooltipPass2" Style="{StaticResource BodyStrongTextBlockStyle}" Visibility="Collapsed" />
+            <PasswordBox
+                Margin="0,5,0,0"
+                Password=""
+                PasswordRevealMode="Peek"
+                VerticalAlignment="Center"
+                Width="300"
+                x:Name="PassBox2"
+                Visibility="Collapsed"/>
+
+        </StackPanel>
+
+    </Grid>
+</Page>

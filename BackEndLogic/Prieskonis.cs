@@ -1,4 +1,6 @@
-﻿namespace PasswordManagerWINUI.BackEndLogic.Objects;
+﻿using PasswordManagerWINUI.BackEndLogic.Objects;
+
+namespace PasswordManagerWINUI.BackEndLogic;
 
 internal class Prieskonis
 {
@@ -11,7 +13,7 @@ internal class Prieskonis
         int difference = (bitas + perPos + 256) % 256;
         account.PassKey[slot] = (byte)difference;
     }
-    
+
     public static void Padruskinti(ref Account account)
     {
         int slot = account.Generated.Millisecond % 256;

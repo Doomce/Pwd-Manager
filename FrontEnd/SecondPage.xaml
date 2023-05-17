@@ -158,11 +158,13 @@
                                 </AppBarToggleButton>
                                 <AppBarSeparator Opacity="0" />
                                 <AppBarButton
+                                    Click="EditPass_OnClick"
                                     Icon="Edit"
                                     Label="Redaguoti"
                                     Opacity="0" />
                                 <AppBarSeparator Opacity="0" />
                                 <AppBarButton
+                                    Click="RemovePass_OnClick"
                                     Icon="Delete"
                                     Label="Pa&#353;alinti"
                                     Opacity="0" />

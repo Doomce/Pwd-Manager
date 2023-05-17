@@ -1,0 +1,102 @@
+<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+<!-- Licensed under the MIT License. -->
+
+<Page
+    x:Class="PasswordManagerWINUI.FrontEnd.FirstPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PasswordManagerWINUI.FrontEnd"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xml:lang="Lt-lt">
+
+    <Grid MaxWidth="1200">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" MinHeight="70" />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" MinHeight="20"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="1"
+            Margin="30,0,0,40"
+            MinWidth="420">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <FontIcon
+                FontSize="70"
+                Grid.Column="0"
+                HorizontalAlignment="Left"
+                Margin="0,0,30,0"
+                x:Name="HeaderIcon" />
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center">
+                <TextBlock
+                    Style="{StaticResource SubtitleTextBlockStyle}"
+                    Text=""
+                    x:Name="HeaderTitle" />
+                <TextBlock
+                    Foreground="LightGray"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text=""
+                    x:Name="HeaderText" />
+            </StackPanel>
+        </Grid>
+
+        <Line Grid.Row="2" Stroke="LightGray"
+                 X1="30" Y1="0"
+                 X2="1200" Y2="0"
+                 StrokeThickness="1"
+                 Margin="0,0,10,0"/>
+
+
+        <Expander Margin="30,0,10,40" VerticalAlignment="Top" Grid.Row="3" MinWidth="450" MaxWidth="1200">
+            <Expander.Header>
+                <Grid
+                    Width="1200"
+                    Grid.Row="1"
+                    Margin="0,10,0,10">
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" x:Name="IMAGE" Source="../Assets/microsoft.png" Height="35" />
+
+                    <TextBlock Margin="30,0,0,0" Grid.Column="1"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="Microsoft paskyros susiejimas"/>
+                </Grid>
+            </Expander.Header>
+            <Expander.Content>
+                <StackPanel MaxWidth="1200" HorizontalAlignment="Left">
+
+                    <TextBlock Margin="0,0,0,20"
+                            Style="{StaticResource BodyStrongTextBlockStyle}"
+                            Text="Visi slaptaþodþiai vienoje paskyroje!"/>
+
+                    <TextBlock Margin="0,0,0,20" HorizontalAlignment="Left"
+                            Style="{StaticResource BodyTextBlockStyle}"
+                            TextWrapping="Wrap"
+                            Text="He told me he'd joined the Marines, and was heading to Iraq the following week. If there is a child on the south side of Chicago who can't read, that matters to me, even if it's not my child. It's that he spoke as if our society was static; as if no progress has been made; as if this country - a country that has made it possible for one of his own members to run for the highest office in the land and build a coalition of white and black; Latino and Asian, rich and poor, young and old - is still irrevocably bound to a tragic past. Well it's time for them to own their failure. Not with so many families to protect and so many lives to mend. "/>
+
+                    <Button Style="{StaticResource AccentButtonStyle}" Content="Prisijungti" Click="Login_Btn_Click"/>
+                    <Button Style="{StaticResource AccentButtonStyle}" Content="Atsijungti" Click="LogOut_Btn_Click"/>
+                    
+                    <TextBlock x:Name="DebugText" Margin="0,0,0,20"
+                            Style="{StaticResource BodyStrongTextBlockStyle}"
+                            Text="Visi slaptaþodþiai vienoje paskyroje!"/>
+                    
+                </StackPanel>
+            </Expander.Content>
+        </Expander>
+
+    </Grid>
+</Page>

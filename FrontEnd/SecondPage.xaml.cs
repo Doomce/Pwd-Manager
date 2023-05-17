@@ -7,7 +7,12 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PasswordManagerWINUI.BackEndLogic;
+using PasswordManagerWINUI.BackEndLogic.Database;
+using PasswordManagerWINUI.FrontEnd.Dialogs;
+using PasswordManagerWINUI.FrontEnd.PasswordDialogs;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -23,13 +28,19 @@ namespace PasswordManagerWINUI
             this.InitializeComponent();
             Model = new PasswordListItemModel();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
+            ListViewPasswords.ItemsSource = Model.Passwords;
         }
 
-        private void Refresh_Btn_OnClick(object sender, RoutedEventArgs e)
+
+        private async void Refresh_Btn_OnClick(object sender, RoutedEventArgs e)
         {
-            Model.Passwords.Add(new PasswordItem { Title = "GOOGLE.COM", Password = "password12333", UserName = "TEST"});
-            var obj = ListViewPasswords.ItemTemplate;
-            ListViewPasswords.ItemsSource = Model.Passwords;
+            var dialog = new Dialog(this.XamlRoot).ForAddAccount();
+
+            var newAccount = await dialog.GetNewAccount();
+            if (newAccount == null) return;
+            //TODO: MYSQL PATIKRINIMAI
+
+            Model.Passwords.Add(newAccount);
             GC.Collect();
         }
 
@@ -119,7 +130,6 @@ namespace PasswordManagerWINUI
         {
             var button = (AppBarButton)sender;
             if (button.DataContext is not PasswordItem dataItem) return;
-            
             if (!await Security.CheckSecurity()) return;
             
             var package = new DataPackage();
@@ -130,5 +140,35 @@ namespace PasswordManagerWINUI
                 "Slaptažodis nukopijuotas į iškarpinę. Šį slaptažodį įklijuokite tik slaptažodžio langelyje.",
                 InfoBarSeverity.Success);
         }
+
+        private async void EditPass_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = (AppBarButton)sender;
+            if (button.DataContext is not PasswordItem dataItem) return;
+            if (!await Security.CheckSecurity()) return;
+
+            var newPassword = await new Dialog(this.XamlRoot).ForEditAccount().GetNewPassword(dataItem.Password);
+            if (String.IsNullOrEmpty(newPassword)) return;
+
+            //TODO: MYSQL PATIKRINIMAI
+
+            Model.Passwords.First(model => model == dataItem).Password = newPassword;
+            dataItem.OnPropertyChanged("Password");
+            NavigationControl.ShowMessage("Sėkminga", "Paskyros slaptažodis pakeistas.", InfoBarSeverity.Success);
+        }
+
+        private async void RemovePass_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = (AppBarButton)sender;
+            if (button.DataContext is not PasswordItem dataItem) return;
+
+            if (!await new Dialog(this.XamlRoot).ForRemoveAccount().GetRemoveAccountResponse()) return;
+            //TODO: MYSQL PATIKRINIMAI
+
+
+            Model.Passwords.Remove(dataItem);
+            NavigationControl.ShowMessage("Sėkminga", $"{dataItem.Title} Slaptažodis pašalintas!", InfoBarSeverity.Success);
+        }
+
     }
 }

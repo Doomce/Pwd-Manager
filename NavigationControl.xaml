@@ -30,15 +30,6 @@
                 <NavigationViewItem Icon="Setting" Content="Parametrai"/>
             </NavigationView.MenuItems>
 
-            <!-- InfoBarNav -->
-            <NavigationView.FooterMenuItems>
-                <InfoBar x:Name="InfoBarNav"
-                         Background="Yellow"
-                         Foreground="Black"
-                         IsOpen="True"
-                         Message="InfoBarNav message"/>
-            </NavigationView.FooterMenuItems>
-
             <winui:Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
