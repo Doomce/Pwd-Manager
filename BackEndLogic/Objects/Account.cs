@@ -14,7 +14,7 @@ internal class Account
     public DateTime Generated { get; set; } = DateTime.Now;
 
     public ulong UserId { get; set; } 
-    public User User { get; set; }
+    public virtual User User { get; set; }
     
     [NotMapped]
     private string Salt
@@ -23,12 +23,24 @@ internal class Account
     }
     
     
-    public void EncryptPassword(string password)
+    public void EncryptPassword(string password, byte[] pubKey)
     {
         using RSA rsa = RSA.Create(2048);
-        rsa.ImportRSAPublicKey(User.PublicKey, out _);
+        rsa.ImportRSAPublicKey(pubKey, out _);
         byte[] plaintextBytes = Encoding.UTF8.GetBytes(password);
         
         PassKey = rsa.Encrypt(plaintextBytes, RSAEncryptionPadding.OaepSHA256);
+    }
+
+    public PasswordItem ToPasswordItem()
+    {
+        var acc = this;
+        Prieskonis.Padruskinti(ref acc);
+        return new PasswordItem()
+        {
+            Title = acc.Platform,
+            UserName = acc.UserName,
+            Password = Security.DecryptPassword(acc.PassKey)
+        };
     }
 }

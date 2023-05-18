@@ -15,6 +15,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using PasswordManagerWINUI.BackEndLogic.Microsoft;
 
 namespace PasswordManagerWINUI
 {
@@ -27,8 +28,18 @@ namespace PasswordManagerWINUI
         {
             this.InitializeComponent();
             Model = new PasswordListItemModel();
-            this.NavigationCacheMode = NavigationCacheMode.Enabled;
+            this.NavigationCacheMode = NavigationCacheMode.Required;
             ListViewPasswords.ItemsSource = Model.Passwords;
+
+            DispatcherQueue.TryEnqueue(async () =>
+            { 
+                Parallel.ForEach(await SqlMethods.GetPassFromDb(), async acc =>
+                {
+                    Model.Passwords.Add(acc.ToPasswordItem());
+                });
+                
+            });
+            
         }
 
 
@@ -38,8 +49,11 @@ namespace PasswordManagerWINUI
 
             var newAccount = await dialog.GetNewAccount();
             if (newAccount == null) return;
-            //TODO: MYSQL PATIKRINIMAI
-
+            if (!await SqlMethods.WritePassToDB(newAccount))
+            {
+                NavigationControl.ShowMessage("Klaida", "Ivyko klaida, įrašant slaptažodį į DB.", InfoBarSeverity.Error);
+                return;
+            }
             Model.Passwords.Add(newAccount);
             GC.Collect();
         }
@@ -164,7 +178,7 @@ namespace PasswordManagerWINUI
 
             if (!await new Dialog(this.XamlRoot).ForRemoveAccount().GetRemoveAccountResponse()) return;
             //TODO: MYSQL PATIKRINIMAI
-
+            SqlMethods.RemovePass(dataItem.Title, dataItem.UserName);
 
             Model.Passwords.Remove(dataItem);
             NavigationControl.ShowMessage("Sėkminga", $"{dataItem.Title} Slaptažodis pašalintas!", InfoBarSeverity.Success);

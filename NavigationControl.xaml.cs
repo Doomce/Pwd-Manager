@@ -20,11 +20,15 @@ namespace PasswordManagerWINUI
 
         public static void ShowMessage(string title, string message, InfoBarSeverity severity)
         {
-            GlobalInfoBar.MessageBar.IsOpen = false;
             GlobalInfoBar.MessageBar.Title = title;
             GlobalInfoBar.MessageBar.Message = message;
             GlobalInfoBar.MessageBar.Severity = severity;
             GlobalInfoBar.MessageBar.IsOpen = true;
+        }
+        
+        public static void HideMessage()
+        {
+            GlobalInfoBar.MessageBar.IsOpen = false;
         }
 
         public NavigationControl()

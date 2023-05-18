@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Navigation;
 using User = Microsoft.Graph.Models.User;
 
 namespace PasswordManagerWINUI.BackEndLogic.Microsoft
@@ -31,12 +32,7 @@ namespace PasswordManagerWINUI.BackEndLogic.Microsoft
 
         private static string MSGraphURL = "https://graph.microsoft.com/v1.0/";
         private AuthenticationResult authResult;
-
         private User AccountProperties;
-
-
-
-
 
         public MsAccount()
         {
@@ -57,11 +53,16 @@ namespace PasswordManagerWINUI.BackEndLogic.Microsoft
 
         public async Task<string> TryLoginToAccountAsync()
         {
+            if (!isHidden) NavigationControl.ShowMessage("Luktelkite", "Jungiamės prie jūsų paskyros...", InfoBarSeverity.Informational);
             try
             {
                 GraphServiceClient graphClient = await SignInAndInitializeGraphServiceClient(scopes);
                 AccountProperties = await graphClient.Me.GetAsync();
                 return AccountProperties.Id;
+            }
+            catch (MsalClientException)
+            {
+                NavigationControl.HideMessage();
             }
             catch (MsalException msalEx)
             {
@@ -82,17 +83,16 @@ namespace PasswordManagerWINUI.BackEndLogic.Microsoft
             try
             {
                 authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
-                                                .WithForceRefresh(false)
-                                                .ExecuteAsync();
+                    .WithForceRefresh(false)
+                    .ExecuteAsync();
             }
             catch (MsalUiRequiredException ex)
             {
                 if (isHidden) return null;
                 authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
-                                                  .ExecuteAsync()
-                                                  .ConfigureAwait(false);
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
             }
-            catch (MsalClientException) { }
             return authResult.AccessToken;
         }
 
@@ -133,7 +133,7 @@ namespace PasswordManagerWINUI.BackEndLogic.Microsoft
             try
             {
                 await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
-                NavigationControl.ShowMessage("Sekminga", "User has signed out", InfoBarSeverity.Success);
+                NavigationControl.ShowMessage("Sekminga", "Jūs atsijungėte nuo savo paskyros.", InfoBarSeverity.Success);
                 return true;
             }
             catch (MsalException ex)

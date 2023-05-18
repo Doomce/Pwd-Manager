@@ -41,7 +41,7 @@ namespace PasswordManagerWINUI.FrontEnd
 
         public FirstPage()
         {     
-            this.NavigationCacheMode = NavigationCacheMode.Enabled;
+            NavigationCacheMode = NavigationCacheMode.Enabled;
             InitUser();
         }
 
@@ -69,15 +69,16 @@ namespace PasswordManagerWINUI.FrontEnd
             {
                 MicrosoftAccount.isHidden = true;
                 string msAccId = await MicrosoftAccount.TryLoginToAccountAsync();
-                this.InitializeComponent();
+                InitializeComponent();
                 if (msAccId == null)
                 {
                     SetGuestTexts();
                     return;
                 }
                 SetUserTexts(MicrosoftAccount.GetUserData().Item1);
-                //SqlMethods.AddOrGetUser(msAccId);
+                SqlMethods.AddOrGetUser(msAccId);
             });
+            
         }
 
         private async void Login_Btn_Click(object sender, RoutedEventArgs e)
@@ -87,7 +88,7 @@ namespace PasswordManagerWINUI.FrontEnd
             if (msAccId == null) return;
             MicrosoftAccount.DisplayLoginInfo();
             SetUserTexts(MicrosoftAccount.GetUserData().Item1);
-            //SqlMethods.AddOrGetUser(msAccId);
+            SqlMethods.AddOrGetUser(msAccId);
         }
 
         private async void LogOut_Btn_Click(object sender, RoutedEventArgs e)

@@ -27,7 +27,7 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Icon="Contact" Content="Vartotojo paskyra"/>
                 <NavigationViewItem Icon="Permissions" Content="Slapta&#x017E;od&#x017E;iai"/>
-                <NavigationViewItem Icon="Setting" Content="Parametrai"/>
+                <NavigationViewItem Icon="Setting" Content="Parametrai" IsEnabled="False"/>
             </NavigationView.MenuItems>
 
             <winui:Grid>

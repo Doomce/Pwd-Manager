@@ -9,7 +9,8 @@ namespace PasswordManagerWINUI.BackEndLogic.Database;
 
 internal class MysqlDbContext : DbContext
 {
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users { get; private set; }
+    public DbSet<Account> Accounts { get; private set; }
 
     private string _sqlConnStr = new MySqlConnectionStringBuilder()
     {
@@ -31,7 +32,13 @@ internal class MysqlDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>().HasKey(p => new { p.UserId, p.Platform, p.UserName });
+        modelBuilder.Entity<Account>()
+            .HasKey(p => new { p.UserId, p.Platform, p.UserName });
+
+        modelBuilder.Entity<Account>()
+            .HasOne<User>()
+            .WithMany(user => user.Accounts)
+            .HasForeignKey(acc => acc.UserId);
 
         modelBuilder.Entity<User>()
             .HasMany(user => user.Accounts)

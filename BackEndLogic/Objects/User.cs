@@ -17,7 +17,7 @@ internal class User
 
     public byte[] PublicKey { get; set; } = Security.GeneratePublicKey();
     
-    public virtual ICollection<Account> Accounts { get; } = new List<Account>();
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 
 
 }
