@@ -23,7 +23,7 @@ namespace PasswordManagerWINUI.BackEndLogic.Microsoft
 
         private string[] scopes = new string[] { "user.read" };
 
-        private const string ClientId = "bbda2122-0dc6-4f14-87c1-c9cbfce6ff7a";
+        private const string ClientId = "Nebeveikia";
 
         private const string Tenant = "common"; // Alternatively "[Enter your tenant, as obtained from the Azure portal, e.g. kko365.onmicrosoft.com]"
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
